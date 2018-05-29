@@ -1,6 +1,6 @@
 {
     "name": "ylsalame/laravelseedgenerator", 
-    "description": "Laravel Seed Generator.",
+    "description": "Laravel Seed Generator",
     "type": "project",
     "license": "MIT",
     "keywords": [ "php", "Laravel", "seed", "artisan", "generator" ],
@@ -16,6 +16,13 @@
         }
     ],
     "autoload": {
-        "psr-4": { "XXXYLSalame\\LaravelSeedGenerator\\": "src/" }
-    }
+        "psr-4": { "YLSalame\\LaravelSeedGenerator\\": "src/" }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "YLSalame\\LaravelSeedGenerator\\SeedGeneratorProvider"
+            ]
+        }
+    }    
 }
