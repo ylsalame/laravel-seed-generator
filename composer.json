@@ -3,7 +3,7 @@
     "description": "Laravel Seed Generator",
     "type": "project",
     "license": "MIT",
-    "keywords": [ "php", "framework", "Laravel", "seed", "artisan", "generator" ],
+    "keywords": [ "php", "Laravel", "seed", "artisan", "generator" ],
     "autoload": {
         "psr-4": { "Core\\": "src/Core" }
     },
