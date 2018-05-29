@@ -17,5 +17,11 @@
             "name": "ylsalame",
             "email": "25203798+ylsalame@users.noreply.github.com"
         }
-    ]
+    ],
+    "autoload": {
+        "classmap": ["src/"],
+        "psr-4": {
+            "YLSalame\\LaravelSeedGenerator\\": "src/"
+        }
+    }
 }

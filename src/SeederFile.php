@@ -1,6 +1,6 @@
 <?php
 
-namespace YLSalame\SeedGenerator;
+namespace YLSalame\LaravelSeedGenerator;
 
 use DB;
 
