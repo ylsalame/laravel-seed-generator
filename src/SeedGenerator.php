@@ -1,6 +1,6 @@
 <?php
 
-namespace YLSalame\SeedGenerator;
+namespace YLSalame\LaravelSeedGenerator;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
@@ -64,6 +64,10 @@ class SeedGenerator extends Command
      */
     private $optionDontOverwrite;
 
+function xpto()
+{
+    echo 'aaa';    
+}
     /**
      * Create a new command instance.
      *
