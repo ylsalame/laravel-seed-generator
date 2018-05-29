@@ -1,0 +1,20 @@
+{
+    "name": "ylsalame/laravel-seed-generator", 
+    "description": "Laravel Seed Generator",
+    "type": "project",
+    "license": "MIT",
+    "keywords": [ "php", "framework", "Laravel", "seed", "artisan", "generator" ],
+    "autoload": {
+        "psr-4": { "Core\\": "src/Core" }
+    },
+    "prefer-stable": true,
+    "require": {
+        "larvel/framework": "5.6.*",
+        "php": ">=5.6"
+    },
+    "authors": [
+        {
+            "name": "ylsalame",
+        }
+    ],
+}
