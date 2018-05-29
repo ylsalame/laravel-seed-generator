@@ -1,6 +1,6 @@
 {
     "name": "ylsalame/laravelseedgenerator", 
-    "description": "Laravel Seed Generator",
+    "description": "Laravel Seed Generator.",
     "type": "project",
     "license": "MIT",
     "keywords": [ "php", "Laravel", "seed", "artisan", "generator" ],
