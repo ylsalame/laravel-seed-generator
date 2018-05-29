@@ -5,18 +5,16 @@ namespace YLSalame\SeedGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use App\Http\Controllers\PopulatorController;
 use DB;
 
-class SeedGeneratorNew extends Command
+class SeedGenerator extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'seedgeneratornew
+    protected $signature = 'seedgenerator
                             {--connection= : target connection to be used (defaults to the default one in /config/database)}
                             {--skipped_tables= : avoid specific tables (comma-delimited)} 
                             {--dont_overwrite : does not overwrite existing seeder classes in /database/seeds}';
@@ -131,7 +129,7 @@ class SeedGeneratorNew extends Command
 
         $this->doEcho();
         $this->doEcho(str_repeat('=', 50));
-        $this->doEcho('Seeder Generator New');
+        $this->doEcho('Seeder Generator');
         $this->doEcho(str_repeat('=', 50));
         $this->doEcho('Connection name used: '.$this->connectionName.chr(10));
 
