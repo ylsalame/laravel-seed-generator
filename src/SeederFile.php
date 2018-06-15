@@ -2,6 +2,8 @@
 
 namespace YLSalame\LaravelSeedGenerator;
 
+use YLSalame\LaravelSeedGenerator\Exceptions\NotificationException;
+use YLSalame\LaravelSeedGenerator\Exceptions\FaltalException;
 use DB;
 
 class SeederFile
@@ -10,34 +12,53 @@ class SeederFile
     private $schema;
     private $table;
     private $records;
-    private $fileName;
     private $recordCount;
     private $content;
+    private $fileName;
+    private $stubFileName;
 
     private $optionDontOverwrite;
 
-    public function generateContent()
+    /**
+     * Checks if the class has all necessary data to proceed
+     *
+     * @return boolean
+     */
+    private function verify()
     {
+        if (!empty($this->connectionName) && !empty($this->table) && !empty($this->schema)) {
+            return true;
+        }
+
+        return false;
+    }
+ 
+    public function generate()
+    {
+        if (!$this->verify()) {
+            throw new Exceptions\NotificationException("Invalid configuration for seeder file ".$this->table);
+            return;
+        }
 
         $this->records = DB::connection($this->connectionName)->table($this->table)->get();
-//            if ($records->isEmpty())
-//                continue;
 
-        $recordCount = 0;
-        $columns = $this->schema->listTableColumns($table);
+        if ($this->records->isEmpty()) {
+            throw new Exceptions\NotificationException("Table ".$this->table." has no records. Skipping file generation for it.");
+        }
+
+        $this->recordCount = 0;
+        $columns = $this->schema->listTableColumns($this->table);
 
         $commandTabs = str_repeat(chr(9), 3);
-        $insertCommands = "DB::connection('{$this->connectionName}')->table('{$this->table}')->insert([".chr(10);
-        foreach ($records as $record)
-        {
+        $this->insertCommands = "DB::connection('{$this->connectionName}')->table('{$this->table}')->insert([".chr(10);
+        foreach ($this->records as $record) {
             $fieldsValues = [];
-            foreach ($columns as $column)
-            {
-                if ($column->getAutoIncrement())
+            foreach ($columns as $column) {
+                if ($column->getAutoIncrement()) {
                     continue;
+                }
 
-                if ($column->getType() == 'Boolean')
-                {
+                if ($column->getType() == 'Boolean') {
                     $value = ($record->{$column->getName()}) ? 'true' : 'false';
                 } else {
                     $value = str_replace("'", "/\'", $record->{$column->getName()});
@@ -45,97 +66,74 @@ class SeederFile
                 }
                 $fieldsValues[] = "'{$column->getName()}' => {$value}";
             }
-            $insertCommands .= $commandTabs.'['.chr(10).$commandTabs.chr(9).implode(', '.chr(10).$commandTabs.chr(9), $fieldsValues).chr(10).$commandTabs.'],'.chr(10);
-            $recordCount++;
+            $this->insertCommands .= $commandTabs.'['.chr(10).$commandTabs.chr(9).implode(', '.chr(10).
+                $commandTabs.chr(9), $fieldsValues).chr(10).$commandTabs.'],'.chr(10);
+            $this->recordCount++;
         }
-        $insertCommands .= chr(9).chr(9).']);';                
+        $this->insertCommands .= chr(9).chr(9).']);';
 
-        $this->setRecordCount($recordCount);
-        $this->setSeederFileContent($table, $insertCommands);
-        $this->setSeederFileName($table);
+        $this->setFileName();
+        $this->generateContent();
         $this->saveFile();
 
-        $this->seededTables[] = $table;
+        return true;
     }
 
-    public function setTable(String $table)
+    public function __get($property)
     {
-        $this->table = $table;
+        if (property_exists($this, $property)) {
+            return $this->$property;
+        }
     }
 
-    public function getTable(): String
+    public function __set($property, $value)
     {
-        return $table;
+        if (property_exists($this, $property)) {
+            $this->$property = $value;
+        }
     }
 
-    private function setFileName()
+    private function setFileName(): void
     {
-        $this->fileName = './database/seeds/'.$this->getTable().'Seeder.php';
+        $this->fileName = './database/seeds/'.$this->table.'Seeder.php';
+        $this->stubFileName = __DIR__.DIRECTORY_SEPARATOR.'Stubs'.DIRECTORY_SEPARATOR.'SeederFile.php';
     }
 
-    private function getFileName(): String
+    private function saveFile(): void
     {
-        return $this->fileName;
-    }
-
-    private function setRecordCount(Integer $recordCount)
-    {
-        $this->recordCount = $recordCount;
-    }
-
-    public function getRecordCount(): Integer
-    {
-        return $this->recordCount;
-    }
-
-    public function setOptionDontOverwrite(Boolean $optionDontOverwrite)
-    {
-        $this->optionDontOverwrite = $optionDontOverwrite;
-    }
-
-    public function getOptionDontOverwrite(): Boolean
-    {
-        return $this->optionDontOverwrite;
-    }
-
-
-
-    public function saveFile()
-    {
-        if (file_exists($this->getFileName()) && $this->getOptionDontOverwrite()) {
-            $this->doEcho("Seeder file for {$this->seederFileTableName} already exists. File will not be overwritten (dont_overwrite flag in effect)");
-            return;
+        if (file_exists($this->fileName) && $this->optionDontOverwrite) {
+            throw new Exceptions\NotificationException("Seeder file for {$this->table} already exists. 
+                File will not be overwritten (dont_overwrite flag in effect)");
         }
 
-        $this->doEcho("Saved Seeder file for {$this->seederFileTableName} with {$this->seederRecordCount} records in ".$this->getFileName());
-        file_put_contents($this->getFileName(), $this->getFileContent());
+        try {
+            file_put_contents($this->fileName, $this->content);
+        } catch (\Exception $e) {
+            throw new Exception('Error while writing contents to :'.$this->fileName.' Error : '.$e->getMessage());
+        }
     }
 
-
-    private function setSeederFileContent(String $table, String $insertCommands)
+    private function generateContent(): void
     {
-        $timestamp = date('Y-m-d H:i:s');
-        $this->seederFileContent = <<<EOT
-<?php
-/*
- * Generated on {$timestamp}
- * Generated by SeedGenerator
- * Records seeded: {$this->seederRecordCount}
-*/
+        try {
+            $content = file_get_contents($this->stubFileName);
+        } catch (\Exception $e) {
+            throw new Exception('SeederFile - Error while fetching contents for :'.$this->stubFileName.' Error : '.$e->getMessage());
+        }
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+        $placeholders = [
+            '{{$timestamp}}',
+            '{{$table}}',
+            '{{$recordCount}}',
+            '{{$insertCommands}}'
+        ];
+        $values = [
+            date('Y-m-d H:i:s'),
+            $this->table,
+            $this->recordCount,
+            $this->insertCommands
+        ];
 
-class {$table}Seeder extends Seeder
-{
-    public function run()
-    {
-        {$insertCommands}
+        $this->content = str_replace($placeholders, $values, $content);
     }
-}
-
-EOT;
-    }
-
-
 }

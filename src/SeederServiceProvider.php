@@ -19,31 +19,4 @@ class SeederServiceProvider extends ServiceProvider
             ]);
         }
     }
-
-
-/*
-    public function register()
-    {
-        $this->app->singleton('seedgenerator', function($app) {
-            return new SeedGenerator;
-        });
-
-        $this->app->booting(function() {
-            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-            $loader->alias('Iseed', 'Orangehill\Iseed\Facades\Iseed');
-        });
-
-        $this->app->singleton('command.iseed', function($app) {
-            return new IseedCommand;
-        });
-
-        $this->commands('command.iseed');
-    }
-
-    public function provides()
-    {
-        return array('iseed');
-    }
-*/
-
 }
