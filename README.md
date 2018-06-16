@@ -13,7 +13,9 @@ Artisan command for Laravel that will create Seeder files for the current data i
 
 2) Update Composer from the CLI:
 
+```
 	composer update
+```
 
 ## Usage (Artisan)
 
