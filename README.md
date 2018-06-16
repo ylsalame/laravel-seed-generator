@@ -1,6 +1,6 @@
 # Laravel Seed Generator
 
-Artisan command for Laravel that will create Seeder files for the current data in the DB using a simple visual inteface
+Artisan command for Laravel that will create Seeder files for the current data in the DB using a simple visual interface
 
 ## Installation
 
@@ -49,12 +49,12 @@ php artisan seedgenerator
 
 Each table detected in the schema will have its own seeder file generated. This seeder file will contain the entire data the table contains at the time.
 
-The path used will be the default one : `\database\seeds`
-The naming convention is `{table_name}Seeder.php`
+	Path: `\database\seeds`
+	Naming convention; `{table_name}Seeder.php`
 
 ### Database seeder file
 
 The database seeder file will contain the trigger for all the table seeder files generated. Skipped table will not be included in this file.
 
-The path used will be the default one : `\database\seeds`
-Since there is only one file generated it will be saved with the name `DatabaseSeeder.php` to maitain the Laravel standard.
+	Path: `\database\seeds`
+	Naming convention: It will be saved with the name `DatabaseSeeder.php` to maintain the Laravel standard.
