@@ -19,7 +19,8 @@ class SeedGenerator extends Command
     protected $signature = 'seedgenerator
                             {--connection= : connection to be used (defaults to the default one in /config/database)}
                             {--skipped_tables= : avoid specific tables (comma-delimited)} 
-                            {--dont_overwrite : does not overwrite existing seeder classes in /database/seeds}';
+                            {--dont_overwrite= : does not overwrite existing seeder classes in /database/seeds}
+                            {--limit_records= : limits the amount of records to fetch from tables}';
 
     /**
      * The console command description.
@@ -85,6 +86,13 @@ class SeedGenerator extends Command
      * @var boolean
      */
     private $optionDontOverwrite;
+
+    /**
+     * Limits the amount of records that will be fecthes from the tables
+     *
+     * @var int
+     */
+    private $optionLimitRecords;
 
     /**
      * Create a new command instance.
@@ -169,7 +177,7 @@ class SeedGenerator extends Command
                 $this->doEcho(str_repeat('=', 60));
 
                 if ($this->connectionName == Config::get('database.default')) {
-                    $this->doEcho('No custom connection defined. Connection used will be the default one configured in Config::database.default!');
+                    $this->doEcho('No custom connection defined. '.chr(10).chr(9).'Connection used will be the default one configured in Config::database.default!');
                 } else {
                     $this->doEcho('Connection used will be the custom one: "'.$this->optionConnection.'"');
                 }
@@ -220,6 +228,7 @@ class SeedGenerator extends Command
         $this->optionConnection = $this->option('connection');
         $this->optionSkippedTables = $this->option('skipped_tables');
         $this->optionDontOverwrite = $this->option('dont_overwrite');
+        $this->optionLimitRecords = $this->option('limit_records');
         $this->skippedTables = explode(',', $this->optionSkippedTables);
         $this->connectionName = empty($this->optionConnection) ? Config::get('database.default') : $this->optionConnection;
     }
@@ -246,6 +255,7 @@ class SeedGenerator extends Command
         foreach ($this->tables as $table) {
             $seederFile = new SeederFile;
             $seederFile->optionDontOverwrite = $this->optionDontOverwrite;
+            $seederFile->optionLimitRecords = $this->optionLimitRecords;
             $seederFile->connectionName = $this->connectionName;
             $seederFile->schema = $this->schema;
             $seederFile->table = $table;

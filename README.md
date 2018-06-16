@@ -1,4 +1,5 @@
-# laravel-seed-generator
+# Laravel Seed Generator
+
 Artisan command for Laravel that will create Seeder files for the current data in the DB using a simple visual inteface
 
 ## Installation
@@ -42,3 +43,13 @@ If no connection is passed and no conneciton is configured in the Laravel config
 
 [default] false
 
+#### limit_records
+[optional] The amount of records to limit when generating the seeder file for a table. If ommited, all records will be fetched and added to the seeder file
+
+[default] {empty}
+
+## Output
+
+### Table seeder files
+
+Each table detected in the schema will have its own seeder file generated. This seeder file will contain the entire data the table contains at the time.

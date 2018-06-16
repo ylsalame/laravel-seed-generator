@@ -18,6 +18,7 @@ class SeederFile
     private $stubFileName;
 
     private $optionDontOverwrite;
+    private $optionLimitRecords;
 
     /**
      * Checks if the class has all necessary data to proceed
@@ -40,7 +41,13 @@ class SeederFile
             return;
         }
 
-        $this->records = DB::connection($this->connectionName)->table($this->table)->get();
+        $tableObject = DB::connection($this->connectionName)->table($this->table);
+
+        if (!empty($this->optionLimitRecords)) {
+            $this->records = $tableObject->limit($this->optionLimitRecords)->get();
+        } else {
+            $this->records = $tableObject->get();
+        }
 
         if ($this->records->isEmpty()) {
             throw new Exceptions\NotificationException("Table ".$this->table." has no records. Skipping file generation for it.");
