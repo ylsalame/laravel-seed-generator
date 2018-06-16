@@ -23,15 +23,18 @@ php artisan seedgenerator
 
 #### connection
 [optional] The name of the connection to be used. 
+
 [default] fetched from Config::database.default
 
 If no connection is passed and no conneciton is configured in the Laravel config the script will raise an exception.
 
 #### skipped_tables
 [optional] A list of tables for the script to skip delimited by commas
+
 [default] {empty}
 
 #### dont_overwrite
 [optional] Boolean flag that will make the script avoid overwritting exiting files
+
 [default] false
 
