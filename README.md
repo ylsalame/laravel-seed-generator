@@ -5,9 +5,11 @@ Artisan command for Laravel that will create Seeder files for the current data i
 
 1) Add `ylsalame/seedgenerator` to composer.json
 
+```
     "require": {
 		"ylsalame/laravelseedgenerator": "dev-master"
     }
+```
 
 2) Update Composer from the CLI:
 
