@@ -49,12 +49,12 @@ php artisan seedgenerator
 
 Each table detected in the schema will have its own seeder file generated. This seeder file will contain the entire data the table contains at the time.
 
-	Path: **\database\seeds**
-	Naming convention: **{table_name}Seeder.php**
+	Path: \database\seeds
+	Naming convention: {table_name}Seeder.php
 
 ### Database seeder file
 
 The database seeder file will contain the trigger for all the table seeder files generated. Skipped table will not be included in this file.
 
-	Path: **\database\seeds**
-	Naming convention: It will be saved with the name **DatabaseSeeder.php** to maintain the Laravel standard.
+	Path: \database\seeds
+	Naming convention: It will be saved with the name DatabaseSeeder.php to maintain the Laravel standard.
