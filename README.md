@@ -8,7 +8,7 @@ Artisan command for Laravel that will create Seeder files for the current data i
 
 ```
 "require": {
-	"ylsalame/laravelseedgenerator": "dev-master"
+	"ylsalame/laravelseedgenerator": "~0.1"
 }
 ```
 

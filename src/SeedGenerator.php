@@ -231,6 +231,9 @@ class SeedGenerator extends Command
         $this->optionLimitRecords = $this->option('limit_records');
         $this->skippedTables = explode(',', $this->optionSkippedTables);
         $this->connectionName = empty($this->optionConnection) ? Config::get('database.default') : $this->optionConnection;
+        if (empty($this->connectionName)) {
+            throw new FatalException('No custom connection used and no default connection set up in the config.');
+        }
     }
 
     private function raiseError(String $msg)
