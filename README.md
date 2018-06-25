@@ -23,6 +23,7 @@ composer update
 ```
 php artisan seedgenerator
 ```
+Seed Generator is a scripted tool with a visual interface. This means that you will not have any action executed before you visual confirm and ackowledge what is going to be done. Here is an example of what the inface looks like:
 
 ### Command options/flags
 

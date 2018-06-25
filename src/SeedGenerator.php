@@ -109,7 +109,7 @@ class SeedGenerator extends Command
         try {
             $this->connection = DB::connection($this->connectionName)->getDoctrineConnection();
         } catch (\Exception $e) {
-            $this->raiseError('Could not find or access the connection named "'.$this->connectionName.'"');
+            $this->raiseError('Could not find or access the connection named "'.$this->connectionName.'"'.chr(10).chr(10).chr(9).'error message: '.$e->getMessage());
         }
     }
 
@@ -178,6 +178,13 @@ class SeedGenerator extends Command
 
                 if ($this->connectionName == Config::get('database.default')) {
                     $this->doEcho('No custom connection defined. '.chr(10).chr(9).'Connection used will be the default one configured in Config::database.default!');
+
+                    if (!empty(env('DB_CONNECTION'))) {
+                        $this->doEcho('Connection defined in ENV variable DB_CONNECTION. Value: '.env('DB_CONNECTION'));
+                    } else {
+                        $this->doEcho('Connection name used: '.Config::get('database.default'));
+                    }
+
                 } else {
                     $this->doEcho('Connection used will be the custom one: "'.$this->optionConnection.'"');
                 }
@@ -231,9 +238,6 @@ class SeedGenerator extends Command
         $this->optionLimitRecords = $this->option('limit_records');
         $this->skippedTables = explode(',', $this->optionSkippedTables);
         $this->connectionName = empty($this->optionConnection) ? Config::get('database.default') : $this->optionConnection;
-        if (empty($this->connectionName)) {
-            throw new FatalException('No custom connection used and no default connection set up in the config.');
-        }
     }
 
     private function raiseError(String $msg)
