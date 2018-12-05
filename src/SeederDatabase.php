@@ -13,6 +13,7 @@ class SeederDatabase
     private $fileName;
 
     private $optionDontOverwrite;
+    private $optionTargetDirectory;
 
     public function generate()
     {
@@ -44,7 +45,10 @@ class SeederDatabase
 
     private function setFileName(): void
     {
-        $this->fileName = './database/seeds/DatabaseSeeder.php';
+        $this->fileName = '.'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'seeds'.DIRECTORY_SEPARATOR.'DatabaseSeeder.php';
+        if (!empty($this->optionTargetDirectory)) {
+            $this->fileName = $this->optionTargetDirectory.DIRECTORY_SEPARATOR.'DatabaseSeeder.php';
+        }
         $this->stubFileName = __DIR__.DIRECTORY_SEPARATOR.'Stubs'.DIRECTORY_SEPARATOR.'SeederDatabaseFile.php';
     }
 

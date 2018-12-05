@@ -9,10 +9,17 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run()
+    /**
+        Seeder main trigger method
+
+        @return void
+     */
+    public function run(): void
     {
-        $this->call([
-            {{$seederCalls}}
-        ]);
+        $this->call(
+            [
+                {{$seederCalls}}
+            ]
+        );
     }
 }

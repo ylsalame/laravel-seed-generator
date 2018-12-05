@@ -14,7 +14,7 @@ or
 
 ```
 "require": {
-	"ylsalame/laravelseedgenerator": "~0.4"
+	"ylsalame/laravelseedgenerator": "^0.5"
 }
 ```
 

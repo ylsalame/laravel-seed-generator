@@ -10,7 +10,12 @@ use Illuminate\Support\Facades\DB;
 
 class {{$table}}Seeder extends Seeder
 {
-    public function run()
+    /**
+        Seeder main method
+
+        @return void
+     */
+    public function run(): void
     {
         {{$insertCommands}}
     }

@@ -14,9 +14,11 @@ class SeederServiceProvider extends ServiceProvider
     public function boot()
     {
         if ($this->app->runningInConsole()) {
-            $this->commands([
-                SeedGenerator::class
-            ]);
+            $this->commands(
+                [
+                    SeedGenerator::class
+                ]
+            );
         }
     }
 }

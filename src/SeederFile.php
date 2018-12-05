@@ -19,6 +19,11 @@ class SeederFile
 
     private $optionDontOverwrite;
     private $optionLimitRecords;
+    private $optionTargetDirectory;
+
+    private $insertCommands;
+
+    private $singleTab = '    ';
 
     /**
      * Checks if the class has all necessary data to proceed
@@ -34,11 +39,15 @@ class SeederFile
         return false;
     }
  
-    public function generate()
+    /**
+        Generates the inster queries for the current Table
+
+        @return bool
+     */
+    public function generate(): bool
     {
         if (!$this->verify()) {
             throw new Exceptions\NotificationException("Invalid configuration for seeder file ".$this->table);
-            return;
         }
 
         $tableObject = DB::connection($this->connectionName)->table($this->table);
@@ -56,8 +65,8 @@ class SeederFile
         $this->recordCount = 0;
         $columns = $this->schema->listTableColumns($this->table);
 
-        $commandTabs = str_repeat(chr(9), 3);
-        $this->insertCommands = "DB::connection('{$this->connectionName}')->table('{$this->table}')->insert([".chr(10);
+        $commandTabs = str_repeat($this->singleTab, 4);
+        $this->insertCommands = "DB::connection('{$this->connectionName}')->table('{$this->table}')->insert(".chr(10).$this->singleTab.$this->singleTab.$this->singleTab."[".chr(10);
         foreach ($this->records as $record) {
             $fieldsValues = [];
             foreach ($columns as $column) {
@@ -73,11 +82,19 @@ class SeederFile
                 }
                 $fieldsValues[] = "'{$column->getName()}' => {$value}";
             }
-            $this->insertCommands .= $commandTabs.'['.chr(10).$commandTabs.chr(9).implode(', '.chr(10).
-                $commandTabs.chr(9), $fieldsValues).chr(10).$commandTabs.'],'.chr(10);
+            $this->insertCommands .= $commandTabs.
+                '['.
+                chr(10).
+                $commandTabs.
+                $this->singleTab.
+                implode(', '.chr(10).$commandTabs.$this->singleTab, $fieldsValues).
+                chr(10).
+                $commandTabs.
+                '],'.
+                chr(10);
             $this->recordCount++;
         }
-        $this->insertCommands .= chr(9).chr(9).']);';
+        $this->insertCommands .= $this->singleTab.$this->singleTab.$this->singleTab.']'.chr(10).$this->singleTab.$this->singleTab.');';
 
         $this->setFileName();
         $this->generateContent();
@@ -100,13 +117,17 @@ class SeederFile
         }
     }
 
-    private function setFileName(): void
+    protected function setFileName(): void
     {
-        $this->fileName = './database/seeds/'.$this->table.'Seeder.php';
+        $this->fileName = '.'.DIRECTORY_SEPARATOR.'database'.DIRECTORY_SEPARATOR.'seeds'.DIRECTORY_SEPARATOR.$this->table.'Seeder.php';
+        if (!empty($this->optionTargetDirectory)) {
+            $this->fileName = $this->optionTargetDirectory.DIRECTORY_SEPARATOR.$this->table.'Seeder.php';
+        }
+
         $this->stubFileName = __DIR__.DIRECTORY_SEPARATOR.'Stubs'.DIRECTORY_SEPARATOR.'SeederFile.php';
     }
 
-    private function saveFile(): void
+    protected function saveFile(): void
     {
         if (file_exists($this->fileName) && $this->optionDontOverwrite) {
             throw new Exceptions\NotificationException("Seeder file for {$this->table} already exists. 
@@ -120,7 +141,12 @@ class SeederFile
         }
     }
 
-    private function generateContent(): void
+    /**
+        Generates the content for the current File
+
+        @return void
+     */
+    protected function generateContent(): void
     {
         try {
             $content = file_get_contents($this->stubFileName);
