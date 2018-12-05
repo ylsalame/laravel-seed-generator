@@ -7,8 +7,14 @@ Artisan command for Laravel that will create Seeder files for the current data i
 1) Add `ylsalame/seedgenerator` to composer.json
 
 ```
+composer require ylsalame/laravelseedgenerator
+```
+
+or
+
+```
 "require": {
-	"ylsalame/laravelseedgenerator": "~0.2"
+	"ylsalame/laravelseedgenerator": "~0.4"
 }
 ```
 
